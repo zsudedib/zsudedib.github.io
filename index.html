@@ -46,13 +46,15 @@
             width: 100%;
             z-index: 1000;
             backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.8);
+            /* background: rgba(255, 255, 255, 0.8); */
+            background: var(--dark);
+            /* opacity: 0.9; */
             padding: 1rem;
             transition: all 0.3s;
         }
 
         nav.scrolled {
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 20px #00000077;
         }
 
         nav ul {
@@ -63,7 +65,7 @@
         }
 
         nav a {
-            color: var(--dark);
+            color: var(--light);
             text-decoration: none;
             font-weight: 500;
             text-transform: uppercase;
@@ -250,9 +252,13 @@
 
         /* Animations */
         @keyframes float {
-            0% { transform: translateY(0px) rotate(-1deg); }
+            /* 0% { transform: translateY(0px) rotate(-1deg); }
             50% { transform: translateY(-25px) rotate(1deg); }
-            100% { transform: translateY(0px) rotate(-1deg); }
+            100% { transform: translateY(0px) rotate(-1deg); } */
+
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(0deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
         }
 
         .floating {
@@ -408,7 +414,7 @@
         <div class="contact-form">
             <form id="contact-form">
                 <div class="input-group">
-                    <input class="form-name" type="text" placeholder="Name" required>
+                    <input class="form-name" type="text" placeholder="Full Name" required>
                 </div>
                 <div class="input-group">
                     <input class="form-email" type="email" placeholder="Email" required>
