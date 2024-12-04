@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Portfolio</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init({
+        publicKey: "nT2TuRa2unS-O-qEp",
+      });
+   })();
+</script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #977c57;
+            --secondary: #523d22;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+        }
+
+        body {
+            /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, serif; */
+            font-family: "IBM Plex Serif", serif;
+            line-height: 1.6;
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* Advanced Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            transition: all 0.3s;
+        }
+
+        nav.scrolled {
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        #home {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #f6f8f9 0%, #e5ebee 100%);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hero-content {
+            padding: 2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-image {
+            width: 400px;
+            height: 600px;
+            background: var(--primary);
+            background-image: url(flash-portrait.jpg);
+            background-position: center;
+            background-size: cover;
+            margin: 2rem auto;
+            position: relative;
+            border-radius: 20px;
+            /* transform: rotate(-5deg); */
+            transition: transform 0.3s;
+        }
+
+        .hero-image:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+
+        /* About Section - Minimal Style */
+        #about {
+            min-height: 100vh;
+            padding: 6rem 2rem;
+            background: white;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .skill-card {
+            padding: 2rem;
+            text-align: center;
+            border: 2px solid var(--light);
+            border-radius: 15px;
+            transition: all 0.3s;
+        }
+
+        .skill-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-10px);
+        }
+
+        /* Works Section - Modern Grid */
+        #works {
+            min-height: 100vh;
+            padding: 6rem 2rem;
+            background: var(--dark);
+            color: white;
+        }
+
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 2rem 0;
+        }
+
+        .work-item {
+            position: relative;
+            height: 400px;
+            background: var(--primary);
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .work-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .work-item:hover .work-info {
+            transform: translateY(0);
+        }
+
+        /* Contact Section - Split Design */
+        #contact {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: white;
+        }
+
+        .contact-info {
+            padding: 4rem;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .contact-form {
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-bottom: 2px solid var(--light);
+            background: transparent;
+            transition: border-color 0.3s;
+            resize: vertical;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        button {
+            padding: 1rem 2rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(-1deg); }
+            50% { transform: translateY(-25px) rotate(1deg); }
+            100% { transform: translateY(0px) rotate(-1deg); }
+        }
+
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            #home {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-image {
+                width: 80%;
+                height: 400px;
+            }
+
+            #contact {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-info {
+                padding: 2rem;
+            }
+
+            .contact-form {
+                padding: 2rem;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        /* Loading Animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+
+        .loader.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="loader">Loading...</div>
+    
+    <nav>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#works">Works</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section id="home">
+        <div class="hero-content">
+            <h1 style="font-size: 4rem; margin-bottom: 1rem;">Zimuzo Udedibia</h1>
+            <p style="font-size: 1.5rem; color: #666;">Crafting digital experiences with passion and precision</p>
+            <button style="margin-top: 2rem;">View My Work</button>
+        </div>
+        <div class="hero-image floating"></div>
+    </section>
+
+    <section id="about">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <h2 style="font-size: 3rem; margin-bottom: 2rem;">About Me</h2>
+            <p style="font-size: 1.2rem; max-width: 800px; margin-bottom: 2rem;">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae justo vel metus 
+                tincidunt dignissim. Nullam eleifend, nisi id porta facilisis, nunc nisi tincidunt nunc.
+            </p>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div style="width: 60px; height: 60px; background: var(--primary); margin: 0 auto 1rem; border-radius: 50%;"></div>
+                    <h3>Web Design</h3>
+                </div>
+                <div class="skill-card">
+                    <div style="width: 60px; height: 60px; background: var(--primary); margin: 0 auto 1rem; border-radius: 50%;"></div>
+                    <h3>Development</h3>
+                </div>
+                <div class="skill-card">
+                    <div style="width: 60px; height: 60px; background: var(--primary); margin: 0 auto 1rem; border-radius: 50%;"></div>
+                    <h3>UI/UX</h3>
+                </div>
+                <div class="skill-card">
+                    <div style="width: 60px; height: 60px; background: var(--primary); margin: 0 auto 1rem; border-radius: 50%;"></div>
+                    <h3>Branding</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="works">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <h2 style="font-size: 3rem; margin-bottom: 2rem;">My Recent Projects</h2>
+            <div class="works-grid">
+                <div class="work-item">
+                    <div class="work-info">
+                        <h3>Project One</h3>
+                        <p>Web Development</p>
+                    </div>
+                </div>
+                <div class="work-item">
+                    <div class="work-info">
+                        <h3>Project Two</h3>
+                        <p>UI Design</p>
+                    </div>
+                </div>
+                <div class="work-item">
+                    <div class="work-info">
+                        <h3>Project Three</h3>
+                        <p>Mobile App</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="contact-info">
+            <h2 style="font-size: 3rem; margin-bottom: 2rem;">Let's Connect</h2>
+            <p style="margin-bottom: 2rem;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+            Sed vitae justo vel metus tincidunt dignissim.</p>
+            <div style="display: grid; gap: 1rem;">
+                <p>📍 Syracuse, NY</p>
+                <p>📧 zsudedibia@gmail.com</p>
+                <p>📱 (315) 933-0086</p>
+            </div>
+        </div>
+        <div class="contact-form">
+            <form id="contact-form">
+                <div class="input-group">
+                    <input class="form-name" type="text" placeholder="Name" required>
+                </div>
+                <div class="input-group">
+                    <input class="form-email" type="email" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <textarea class="form-message" placeholder="Message" rows="6" required></textarea>
+                </div>
+                <button type="submit" onclick="sendMail()">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <script>
+        // Loading animation
+        window.addEventListener('load', () => {
+            document.querySelector('.loader').classList.add('fade-out');
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section > div').forEach((element) => {
+            element.style.opacity = 0;
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'all 0.6s ease-out';
+            observer.observe(element);
+        });
+
+        // Form submission
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const button = this.querySelector('button');
+            button.innerHTML = 'Sending...';
+            setTimeout(() => {
+                button.innerHTML = 'Message Sent!';
+                this.reset();
+                setTimeout(() => {
+                    button.innerHTML = 'Send Message';
+                }, 2000);
+            }, 1500);
+        });
+
+        // Work item hover effect
+        document.querySelectorAll('.work-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.02)';
+            });
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
