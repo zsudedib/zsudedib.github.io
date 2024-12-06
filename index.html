@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zimuzo Udedibia</title>
+    <title>Zimuzo Udedibia - Personal Page</title>
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script type="text/javascript"
         src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
@@ -16,24 +16,24 @@
    })();
 </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap');
-        * {
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Prata&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');        
+* {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "IBM Plex Serif", serif !important;
+            font-family: "Prata", serif !important;
         }
 
         :root {
             --primary: #977c57;
             --secondary: #523d22;
-            --dark: #2c3e50;
+            /* --dark: #2c3e50; */
+            --dark: #000000dd;
             --light: #dddddd;
         }
 
         body {
             /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, serif; */
-            font-family: "IBM Plex Serif", serif;
             line-height: 1.6;
             color: var(--dark);
             overflow-x: hidden;
@@ -112,7 +112,7 @@
             width: 400px;
             height: 600px;
             background: var(--primary);
-            background-image: url(flash-portrait.jpg);
+            background-image: url(flash-portrait-nice.jpg);
             background-position: center;
             background-size: cover;
             margin: 2rem auto;
@@ -141,12 +141,32 @@
         }
 
         .skill-card {
+            background: #fff;
             padding: 2rem;
             text-align: center;
             border: 2px solid var(--light);
             border-radius: 15px;
             transition: all 0.3s;
+
         }
+
+        .card-icon-0 {
+            background-image: url(internet.png);
+            background-position: center;
+            background-size: cover;
+        }
+
+        .card-icon-1 {
+            background-image: url(oop.png);
+            background-position: center;
+            background-size: cover;
+        }
+        .card-icon-2 {
+            background-image: url(uiux.png);
+            background-position: center;
+            background-size: cover;
+        }
+
 
         .skill-card:hover {
             border-color: var(--primary);
@@ -177,6 +197,22 @@
             cursor: pointer;
         }
 
+        .work-item#i-0{
+            background-image: url(wegmans-route.png);
+            background-position: center;
+            background-size: cover;
+        }
+        .work-item#i-1{
+            background-image: url(heap-sort.png);
+            background-position: center;
+            background-size: cover;
+        }
+
+        .work-item#i-2{
+            background-image: url(task-flow.png);
+            background-position: center;
+            background-size: cover;
+        }
         .work-info {
             position: absolute;
             bottom: 0;
@@ -200,6 +236,33 @@
             background: white;
         }
 
+        .contact-links{
+            color: var(--light);
+            text-decoration: none;
+            position: relative;
+            transition: all 0.3s;
+        }
+        .contact-links::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--dark);
+            transition: width 0.6s;
+        }
+
+        .contact-links:hover{
+            color: var(--dark);
+        }
+
+        .contact-links:hover::after {
+            color: var(--dark);
+            width: 100%;
+        }
+
+
         .contact-info {
             padding: 4rem;
             background: var(--primary);
@@ -214,6 +277,13 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+        }
+
+        #contact-form{
+            display: flex;
+            flex-direction: column;
+            align-items: center;    
         }
 
         .input-group {
@@ -250,6 +320,29 @@
             transform: translateY(-2px);
         }
 
+        .message-sent{
+            padding: 20px;
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--dark);
+            backdrop-filter: blur(15px);
+            color: var(--light);
+            width: 90%;
+            height: 90%;
+            z-index: 10000;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .x{
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 15px;
+        }
+
         /* Animations */
         @keyframes float {
             /* 0% { transform: translateY(0px) rotate(-1deg); }
@@ -259,6 +352,16 @@
             0% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-5px) rotate(0deg); }
             100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        @keyframes in-fade {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes out-fade {
+            0% { opacity: 1; }
+            100% { opacity: 0; }
         }
 
         .floating {
@@ -340,35 +443,36 @@
     <section id="home">
         <div class="hero-content">
             <h1 style="font-size: 4rem; margin-bottom: 1rem;">Zimuzo Udedibia</h1>
-            <p style="font-size: 1.5rem; color: #666;">Crafting digital experiences with passion and precision</p>
-            <button style="margin-top: 2rem;">View My Work</button>
+            <p style="font-size: 1.5rem; color: #666;">Web Developer | Computer Science student at Syracuse University </p>
+            <a href="#works"><button style="margin-top: 2rem;">View My Work</button></a>
         </div>
         <div class="hero-image floating"></div>
     </section>
 
     <section id="about">
         <div style="max-width: 1200px; margin: 0 auto;">
-            <h2 style="font-size: 3rem; margin-bottom: 2rem;">About Me</h2>
+            <h2 style="font-size: 3rem; margin-bottom: 2rem;">About Me | Skills</h2>
             <p style="font-size: 1.2rem; max-width: 800px; margin-bottom: 2rem;">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae justo vel metus 
-                tincidunt dignissim. Nullam eleifend, nisi id porta facilisis, nunc nisi tincidunt nunc.
+                I am a third year  Computer Science student at Syracuse Unversity. 
+                I am mostly interested in software development for the means of adding functionality to a public service. 
+                I have a background in full stack web development mostly through React, involving: JavaScript, TypeScript, SQL, PHP, and Python, as well object-oriented programming in Java & C++. I enjoy implenting popular algorithms with visual demonstration using Vanilla JavaScript.
             </p>
             <div class="skills-grid">
                 <div class="skill-card">
-                    <div style="width: 60px; height: 60px; background: var(--primary); margin: 0 auto 1rem; border-radius: 50%;"></div>
-                    <h3>Web Design</h3>
+                    <div class = "card-icon-0" style="width: 60px; height: 60px; margin: 0 auto 1rem; border-radius: 50%;"></div>
+                    <h3>Full Stack Web Development</h3>
+                </div>
+                <div  class="skill-card">
+                    <div class = "card-icon-1" style="width: 60px; height: 60px; margin: 0 auto 1rem; border-radius: 50%;"></div>
+                    <h3>Object-Oriented Programming</h3>
                 </div>
                 <div class="skill-card">
-                    <div style="width: 60px; height: 60px; background: var(--primary); margin: 0 auto 1rem; border-radius: 50%;"></div>
-                    <h3>Development</h3>
+                    <div class = "card-icon-2" style="width: 100px; height: 60px; margin: 0 auto 1rem; border-radius: 0%;"></div>
+                    <h3>UI/UX principles</h3>
                 </div>
-                <div class="skill-card">
-                    <div style="width: 60px; height: 60px; background: var(--primary); margin: 0 auto 1rem; border-radius: 50%;"></div>
-                    <h3>UI/UX</h3>
-                </div>
-                <div class="skill-card">
-                    <div style="width: 60px; height: 60px; background: var(--primary); margin: 0 auto 1rem; border-radius: 50%;"></div>
-                    <h3>Branding</h3>
+                <!-- <div class="skill-card">
+                    <div class = "card-icon-3" style="width: 60px; height: 60px; margin: 0 auto 1rem; border-radius: 50%;"></div>
+                    <h3>Branding</h3> -->
                 </div>
             </div>
         </div>
@@ -376,24 +480,25 @@
 
     <section id="works">
         <div style="max-width: 1200px; margin: 0 auto;">
-            <h2 style="font-size: 3rem; margin-bottom: 2rem;">My Recent Projects</h2>
+            <h2 style="font-size: 3rem; margin-bottom: 2rem;">Recent Projects</h2>
+            <p>Click to view:</p>
             <div class="works-grid">
-                <div class="work-item">
+                <div class="work-item" id="i-0" onclick="window.open('https://devpost.com/software/wegmans-grocery-path-finer', '_blank')">
                     <div class="work-info">
-                        <h3>Project One</h3>
-                        <p>Web Development</p>
+                        <h3>Wegmans Grocery Path Finder</h3>
+                        <p>Web Scraping | Artificial Intelligence | Pathfinding</p>
                     </div>
                 </div>
-                <div class="work-item">
+                <div class="work-item" id="i-1" onclick="window.open('heap-sort.html', '_blank')">
                     <div class="work-info">
-                        <h3>Project Two</h3>
-                        <p>UI Design</p>
+                        <h3>Heap Sort</h3>
+                        <p>Sorting | Algorithm Visualization</p>
                     </div>
                 </div>
-                <div class="work-item">
+                <div class="work-item" id="i-2" onclick="window.open('task-flow.html', '_blank')">
                     <div class="work-info">
-                        <h3>Project Three</h3>
-                        <p>Mobile App</p>
+                        <h3>Task Flow Board</h3>
+                        <p>Productivity | Database management</p>
                     </div>
                 </div>
             </div>
@@ -403,21 +508,26 @@
     <section id="contact">
         <div class="contact-info">
             <h2 style="font-size: 3rem; margin-bottom: 2rem;">Let's Connect</h2>
-            <p style="margin-bottom: 2rem;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Sed vitae justo vel metus tincidunt dignissim.</p>
+            <p style="margin-bottom: 2rem;">Here are some links to where you can reach me. Reach out wherever you feel most comfortable. You can also write me a message here and I'll write back to your email.</p>
             <div style="display: grid; gap: 1rem;">
-                <p>📍 Syracuse, NY</p>
-                <p>📧 zsudedibia@gmail.com</p>
-                <p>📱 (315) 933-0086</p>
+                <a class="contact-links" target="_blank" href="https://www.linkedin.com/in/zimuzo-udedibia-63073523b/">LinkedIn</a>
+                <a class="contact-links" target="_blank" href="https://github.com/zsudedib">GitHub</a>
+                <a class="contact-links" target="_blank" href="https://www.instagram.com/zsud__11/?hl=en">Instagram</a>
+                <br>
+                <p>Syracuse, NY</p>
+                <p>zsudedibia@gmail.com</p>
+                <p>(315) 933-0086</p>
+
             </div>
         </div>
         <div class="contact-form">
+            <div class="message-sent"><img class="x" src="x.svg" alt="x"><div><h3>Message sent!</h3><br>I will be responding soon through your email.</br></div></div>
             <form id="contact-form">
                 <div class="input-group">
-                    <input class="form-name" type="text" placeholder="Full Name" required>
+                    <input class="form-name" type="text" placeholder="Your Full Name" required>
                 </div>
                 <div class="input-group">
-                    <input class="form-email" type="email" placeholder="Email" required>
+                    <input class="form-email" type="email" placeholder="Your Email" required>
                 </div>
                 <div class="input-group">
                     <textarea class="form-message" placeholder="Message" rows="6" required></textarea>
@@ -474,6 +584,8 @@
             observer.observe(element);
         });
 
+        const messageSent = $(".message-sent")[0];
+        const xButton = $(".x")[0];
         // Form submission
         document.getElementById('contact-form').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -481,12 +593,23 @@
             button.innerHTML = 'Sending...';
             setTimeout(() => {
                 button.innerHTML = 'Message Sent!';
+                messageSent.style.display = 'flex';
+                messageSent.style.animation = "in-fade 0.5s linear";
                 this.reset();
                 setTimeout(() => {
                     button.innerHTML = 'Send Message';
                 }, 2000);
             }, 1500);
         });
+
+    
+        xButton.onclick = () => {
+            console.log("x works");
+            messageSent.style.animation = "out-fade 0.5s linear";
+            setTimeout(() => {
+                messageSent.style.display = 'none';
+            }, 500);
+        }
 
         // Work item hover effect
         document.querySelectorAll('.work-item').forEach(item => {
@@ -497,6 +620,12 @@
                 this.style.transform = 'scale(1)';
             });
         });
+
+
+
+        
+
+
     </script>
     <script src="script.js"></script>
 </body>

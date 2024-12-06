@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heap Sort Visualizer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&family=Prata&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');        
+
+        :root {
+            --primary: #977c57;
+            --secondary: #523d22;
+            /* --dark: #2c3e50; */
+            --dark: #000000dd;
+            --light: #dddddd;
+
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Prata", serif !important;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        
+        .main {
+            /* font-family: system-ui, -apple-system, sans-serif; 
+            background-color: var(--dark);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem; */
+        }
+
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 2rem;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            background-color: var(--primary);
+            color: var(--light);
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary);
+        }
+
+        .visualization {
+            display: flex;
+            align-items: flex-end;
+            gap: 1px;
+            height: 60vh;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .bar {
+            flex: 1;
+            background-color: var(--primary);
+            transition: height 0.3s ease;
+            border-radius: 5px;
+        }
+
+        .bar.comparing {
+            background-color: #ff6262;
+        }
+
+        .bar.swapping {
+            background-color: #ffffff;
+        }
+
+        @media (max-width: 600px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .visualization {
+                height: 50vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- <main class="heap-main"> -->
+    <div class="controls">
+        <div class="slider-container">
+            <label for="size">Array Size: <span id="sizeValue">50</span></label>
+            <input type="range" id="size" min="10" max="1000" value="50">
+        </div>
+        <div class="slider-container">
+            <label for="speed">Speed (quickest to slowest): <span id="speedValue">10</span></label>
+            <input type="range" id="speed" min="1" max="20" value="10">
+        </div>
+        <button id="generate">Generate New Array</button>
+        <button id="sort">Sort</button>
+    </div>
+    <div class="visualization" id="container"></div>
+
+    <script>
+        const container = document.getElementById('container');
+        const sizeSlider = document.getElementById('size');
+        const speedSlider = document.getElementById('speed');
+        const sizeValue = document.getElementById('sizeValue');
+        const speedValue = document.getElementById('speedValue');
+        const generateBtn = document.getElementById('generate');
+        const sortBtn = document.getElementById('sort');
+        let array = [];
+        let sorting = false;
+
+        function generateArray() {
+            const size = parseInt(sizeSlider.value);
+            array = Array.from({length: size}, () => Math.random() * 100);
+            renderBars();
+        }
+
+        function renderBars() {
+            container.innerHTML = '';
+            const maxVal = Math.max(...array);
+            array.forEach(val => {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                bar.style.height = `${(val / maxVal) * 100}%`;
+                container.appendChild(bar);
+            });
+        }
+
+        function getDelay() {
+            const totalTime = parseInt(speedSlider.value) * 1000; // Convert to milliseconds
+            const operations = array.length * Math.log2(array.length); // Approximate number of operations
+            return totalTime / operations;
+        }
+
+        async function heapSort() {
+            if (sorting) return;
+            sorting = true;
+            sortBtn.disabled = true;
+            generateBtn.disabled = true;
+            sizeSlider.disabled = true;
+            speedSlider.disabled = true;
+
+            const n = array.length;
+
+            for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+                await heapify(array, n, i);
+            }
+
+            for (let i = n - 1; i > 0; i--) {
+                await swap(0, i);
+                await heapify(array, i, 0);
+            }
+
+            sorting = false;
+            sortBtn.disabled = false;
+            generateBtn.disabled = false;
+            sizeSlider.disabled = false;
+            speedSlider.disabled = false;
+        }
+
+        async function heapify(arr, n, i) {
+            let largest = i;
+            const left = 2 * i + 1;
+            const right = 2 * i + 2;
+            const delay = getDelay();
+
+            const bars = container.children;
+            bars[i].classList.add('comparing');
+            await new Promise(resolve => setTimeout(resolve, delay));
+
+            if (left < n) {
+                bars[left].classList.add('comparing');
+                if (arr[left] > arr[largest]) {
+                    largest = left;
+                }
+                await new Promise(resolve => setTimeout(resolve, delay));
+                bars[left].classList.remove('comparing');
+            }
+
+            if (right < n) {
+                bars[right].classList.add('comparing');
+                if (arr[right] > arr[largest]) {
+                    largest = right;
+                }
+                await new Promise(resolve => setTimeout(resolve, delay));
+                bars[right].classList.remove('comparing');
+            }
+
+            bars[i].classList.remove('comparing');
+
+            if (largest !== i) {
+                await swap(i, largest);
+                await heapify(arr, n, largest);
+            }
+        }
+
+        async function swap(i, j) {
+            const delay = getDelay();
+            const bars = container.children;
+            bars[i].classList.add('swapping');
+            bars[j].classList.add('swapping');
+
+            await new Promise(resolve => setTimeout(resolve, delay));
+
+            [array[i], array[j]] = [array[j], array[i]];
+            [bars[i].style.height, bars[j].style.height] = 
+            [bars[j].style.height, bars[i].style.height];
+
+            await new Promise(resolve => setTimeout(resolve, delay));
+
+            bars[i].classList.remove('swapping');
+            bars[j].classList.remove('swapping');
+        }
+
+        sizeSlider.addEventListener('input', () => {
+            sizeValue.textContent = sizeSlider.value;
+        });
+
+        speedSlider.addEventListener('input', () => {
+            speedValue.textContent = speedSlider.value;
+        });
+
+        generateBtn.addEventListener('click', generateArray);
+        sortBtn.addEventListener('click', heapSort);
+
+        // Initial array generation
+        generateArray();
+    </script>
+    </section>
+<!-- </main> -->
+</body>
+</html>
