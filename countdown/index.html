@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Tracker</title>
+    <style>
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif !important;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8585 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .add-countdown {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr auto;
+            gap: 15px;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            .form-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        label {
+            font-weight: 500;
+            font-size: 16px;
+        }
+
+        input, .timezone-select {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        input:focus, .timezone-select:focus {
+            outline: none;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+
+        .color-picker {
+            width: 100%;
+            height: 45px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #fff;
+        }
+
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #ff0844;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            min-width: 200px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #ff0844 0%, #ff8585 100%);
+        }
+
+        .countdowns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .countdown-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 0.5s ease-out;
+            transition: all 0.3s;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .countdown-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .countdown-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--card-color);
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .delete-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            min-width: unset;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 0;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 0, 0, 0.5);
+            transform: scale(1.1);
+        }
+
+        .countdown-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .countdown-date {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .countdown-display {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .time-unit {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .time-value {
+            font-size: 32px;
+            font-weight: 700;
+            display: block;
+            color: white;
+        }
+
+        .time-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        .days-only {
+            font-size: 48px;
+            font-weight: 700;
+            text-align: center;
+            margin: 20px 0;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff0844 0%, #ff0844 100%);
+            border-radius: 4px;
+            transition: width 1s ease-out;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            opacity: 0.7;
+        }
+
+        .empty-state h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            color: #ff0844;
+            font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .timezone-select {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .timezone-select:focus {
+            outline: none;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+
+        .time-value {
+            transition: color 0.3s;
+        }
+        .time-value.changed {
+            color: #ffb199;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.43/moment-timezone-with-data.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>When I Get To See Ma Fleur</h1>
+        <p class="subtitle">Enter dates that you know we can't wait for 😉</p>
+
+        <div class="add-countdown">
+            <div class="form-group">
+                <label for="event-name">Name</label>
+                <input type="text" id="event-name" placeholder="e.g., Our Anniversary, Our Birthdays, Anything!">
+                
+                <label for="event-date">Date</label>
+                <input type="date" id="event-date">
+                
+                <label for="timezone">Timezone</label>
+                <select id="timezone" class="timezone-select">
+                    <option value="GMT">GMT (Default)</option>
+                </select>
+
+                <label for="event-color">Color</label>
+                <input type="color" id="event-color" class="color-picker" value="#f093fb">
+            </div>
+            <div class="form-actions">
+                <button onclick="addCountdown()">Add Countdown</button>
+            </div>
+            <div class="error" id="error-message"></div>
+        </div>
+
+        <div class="countdowns-grid" id="countdowns-grid">
+            <div class="empty-state">
+                <h2>No countdowns yet!</h2>
+                <p>Go ahead and add one above. You can even add Kim's graduation 🤷‍♂️</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let countdowns = [];
+        let intervalId;
+
+        // Load saved countdowns on page load
+        function loadCountdowns() {
+            const saved = localStorage.getItem('countdowns');
+            if (saved) {
+                try {
+                    countdowns = JSON.parse(saved);
+                    // Force a full render by clearing the grid first
+                    const grid = document.getElementById('countdowns-grid');
+                    grid.innerHTML = '';
+                    renderCountdowns();
+                } catch (e) {
+                    countdowns = [];
+                }
+            }
+        }
+
+        // Save countdowns to localStorage
+        function saveCountdowns() {
+            localStorage.setItem('countdowns', JSON.stringify(countdowns));
+            // Force a full render by clearing the grid first
+            const grid = document.getElementById('countdowns-grid');
+            grid.innerHTML = '';
+            renderCountdowns();
+        }
+
+        // Populate timezone dropdown
+        function populateTimezones() {
+            const timezones = moment.tz.names();
+            const tzSelect = document.getElementById('timezone');
+            tzSelect.innerHTML = '<option value="GMT">GMT (Default)</option>';
+            
+            timezones.forEach(tz => {
+                const offset = moment.tz(tz).format('Z');
+                const option = document.createElement('option');
+                option.value = tz;
+                option.textContent = `${tz} (${offset})`;
+                tzSelect.appendChild(option);
+            });
+        }
+
+        function calculateTimeLeft(targetDate, timezone) {
+            const now = moment().tz(timezone);
+            const target = moment.tz(targetDate + 'T00:00:00', timezone);
+            
+            // Compare dates without time components
+            const todayStart = now.clone().startOf('day');
+            const targetDay = target.clone().startOf('day');
+            
+            // If the target date is before or equal to today's start, show "Today!"
+            if (targetDay.isSameOrBefore(todayStart)) {
+                return { days: 0, hours: 0, minutes: 0, seconds: 0, totalDays: 0, progress: 100 };
+            }
+
+            const diff = target.diff(now);
+            const duration = moment.duration(diff);
+            const days = Math.floor(duration.asDays());
+            const hours = duration.hours();
+            const minutes = duration.minutes();
+            const seconds = duration.seconds();
+
+            // Calculate progress (assuming max 365 days for progress bar)
+            const createdDate = moment(target).subtract(1, 'year');
+            const totalTime = target.diff(createdDate);
+            const elapsed = now.diff(createdDate);
+            const progress = Math.min((elapsed / totalTime) * 100, 100);
+
+            return { days, hours, minutes, seconds, totalDays: days, progress };
+        }
+
+        function addCountdown() {
+            const name = document.getElementById('event-name').value.trim();
+            const date = document.getElementById('event-date').value;
+            const timezone = document.getElementById('timezone').value;
+            const color = document.getElementById('event-color').value;
+            const errorEl = document.getElementById('error-message');
+
+            // Validation
+            if (!name || !date) {
+                errorEl.textContent = 'Please enter both event name and date.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            // Create date in selected timezone and compare with today
+            const eventDate = moment.tz(date + 'T00:00:00', timezone);
+            const todayStart = moment().tz(timezone).startOf('day');
+
+            if (eventDate.isSameOrBefore(todayStart)) {
+                errorEl.textContent = 'Please select a future date.';
+                errorEl.classList.add('show');
+                return;
+            }
+
+            // Add countdown
+            const countdown = {
+                id: Date.now(),
+                name,
+                date,
+                timezone,
+                color,
+                createdAt: moment().toISOString()
+            };
+
+            countdowns.push(countdown);
+            saveCountdowns();
+
+            // Clear form
+            document.getElementById('event-name').value = '';
+            document.getElementById('event-date').value = '';
+            document.getElementById('timezone').value = 'GMT';
+            document.getElementById('event-color').value = '#f093fb';
+            errorEl.classList.remove('show');
+        }
+
+        function deleteCountdown(id) {
+            countdowns = countdowns.filter(c => c.id !== id);
+            saveCountdowns();
+        }
+
+        function formatDate(dateString, timezone) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: timezone };
+            return new Date(dateString + 'T00:00:00').toLocaleDateString(undefined, options);
+        }
+
+        function renderCountdowns() {
+            const grid = document.getElementById('countdowns-grid');
+            
+            if (countdowns.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <h2>No countdowns yet!</h2>
+                        <p>Go ahead and add one above. You can even add Kim's graduation 🤷‍♂️</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort by date (nearest first)
+            countdowns.sort((a, b) => moment.tz(a.date, a.timezone).diff(moment.tz(b.date, b.timezone)));
+
+            // Only create the full HTML if the grid is empty or needs a full refresh
+            if (!grid.querySelector('.countdown-card')) {
+                grid.innerHTML = countdowns.map(countdown => {
+                    const timeLeft = calculateTimeLeft(countdown.date, countdown.timezone);
+                    
+                    return `
+                        <div class="countdown-card" data-id="${countdown.id}" style="--card-color: ${countdown.color}">
+                            <button class="delete-btn" onclick="deleteCountdown(${countdown.id})">×</button>
+                            <h3 class="countdown-title">${countdown.name}</h3>
+                            <p class="countdown-date">${formatDate(countdown.date, countdown.timezone)} (${countdown.timezone})</p>
+                            
+                            ${timeLeft.totalDays > 0 ? `
+                                <div class="countdown-display">
+                                    <div class="time-unit">
+                                        <span class="time-value days" data-value="${timeLeft.days}">${timeLeft.days}</span>
+                                        <span class="time-label">Days</span>
+                                    </div>
+                                    <div class="time-unit">
+                                        <span class="time-value hours" data-value="${timeLeft.hours}">${timeLeft.hours}</span>
+                                        <span class="time-label">Hours</span>
+                                    </div>
+                                    <div class="time-unit">
+                                        <span class="time-value minutes" data-value="${timeLeft.minutes}">${timeLeft.minutes}</span>
+                                        <span class="time-label">Minutes</span>
+                                    </div>
+                                    <div class="time-unit">
+                                        <span class="time-value seconds" data-value="${timeLeft.seconds}">${timeLeft.seconds}</span>
+                                        <span class="time-label">Seconds</span>
+                                    </div>
+                                </div>
+                                <div class="days-only" data-days="${timeLeft.totalDays}">${timeLeft.totalDays} days</div>
+                            ` : `
+                                <div class="days-only">🎉 Today!</div>
+                            `}
+                            
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${timeLeft.progress}%"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                // Update only the time values that have changed
+                countdowns.forEach(countdown => {
+                    const card = grid.querySelector(`.countdown-card[data-id="${countdown.id}"]`);
+                    if (!card) return;
+
+                    const timeLeft = calculateTimeLeft(countdown.date, countdown.timezone);
+                    
+                    if (timeLeft.totalDays > 0) {
+                        // Update days if changed
+                        const daysEl = card.querySelector('.time-value.days');
+                        const currentDays = parseInt(daysEl.dataset.value);
+                        if (currentDays !== timeLeft.days) {
+                            daysEl.dataset.value = timeLeft.days;
+                            daysEl.textContent = timeLeft.days;
+                            card.querySelector('.days-only').textContent = `${timeLeft.totalDays} days`;
+                        }
+
+                        // Update hours if changed
+                        const hoursEl = card.querySelector('.time-value.hours');
+                        const currentHours = parseInt(hoursEl.dataset.value);
+                        if (currentHours !== timeLeft.hours) {
+                            hoursEl.dataset.value = timeLeft.hours;
+                            hoursEl.textContent = timeLeft.hours;
+                        }
+
+                        // Update minutes if changed
+                        const minutesEl = card.querySelector('.time-value.minutes');
+                        const currentMinutes = parseInt(minutesEl.dataset.value);
+                        if (currentMinutes !== timeLeft.minutes) {
+                            minutesEl.dataset.value = timeLeft.minutes;
+                            minutesEl.textContent = timeLeft.minutes;
+                        }
+
+                        // Update seconds if changed
+                        const secondsEl = card.querySelector('.time-value.seconds');
+                        const currentSeconds = parseInt(secondsEl.dataset.value);
+                        if (currentSeconds !== timeLeft.seconds) {
+                            secondsEl.dataset.value = timeLeft.seconds;
+                            secondsEl.textContent = timeLeft.seconds;
+                        }
+
+                        // Update progress bar
+                        card.querySelector('.progress-fill').style.width = `${timeLeft.progress}%`;
+                    } else if (card.querySelector('.countdown-display')) {
+                        // If countdown finished, replace with celebration message
+                        card.querySelector('.countdown-display').remove();
+                        card.querySelector('.days-only').textContent = '🎉 Today!';
+                    }
+                });
+            }
+        }
+
+        // Update countdowns every second
+        function startUpdating() {
+            intervalId = setInterval(() => {
+                if (countdowns.length > 0) {
+                    renderCountdowns();
+                }
+            }, 1000);
+        }
+
+        // Handle Enter key in form
+        document.getElementById('event-name').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addCountdown();
+        });
+
+        document.getElementById('event-date').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addCountdown();
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            populateTimezones();
+            loadCountdowns();
+            startUpdating();
+
+            // Set minimum date to tomorrow
+            const tomorrow = moment().add(1, 'day').startOf('day').format('YYYY-MM-DD');
+            document.getElementById('event-date').min = tomorrow;
+        });
+    </script>
+</body>
+</html>
